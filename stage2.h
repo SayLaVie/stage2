@@ -161,6 +161,13 @@ private:
 	// stage2frommain.cpp
 	void newLine();
 
+	// stage2finalproductions.cpp
+	void IfStmt();
+	void ElsePt();
+	void WhileStmt();
+	void RepeatStmt();
+	void NullStmt();
+
 public:
 	// Constructor
 	Stage(char *ifile, char *oflist, char *ofobj)
