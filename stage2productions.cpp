@@ -300,6 +300,7 @@ bool Stage::isKeyID(string check)
 	keywords.push_back("end");
 	keywords.push_back("true");
 	keywords.push_back("false");
+	// added at stage1
 	keywords.push_back("not");
 	keywords.push_back("mod");
 	keywords.push_back("div");
@@ -307,6 +308,14 @@ bool Stage::isKeyID(string check)
 	keywords.push_back("or");
 	keywords.push_back("read");
 	keywords.push_back("write");
+	// added at stage2
+	keywords.push_back("if");
+	keywords.push_back("then");
+	keywords.push_back("else");
+	keywords.push_back("repeat");
+	keywords.push_back("while");
+	keywords.push_back("do");
+	keywords.push_back("until");
 
 	return (find(keywords.begin(), keywords.end(), check) != keywords.end());
 }
@@ -339,14 +348,4 @@ bool Stage::isLiteral(string name)
 bool Stage::isBoolean(string name)
 {
 	return (name == "true" || name == "false");
-}
-
-bool operator==(entry extName, string name)
-{
-	return extName.externalName == name;
-}
-
-bool operator==(entry extName, pair<storeType, string> lookFor)
-{
-	return (extName.dataType == lookFor.first && extName.value == lookFor.second);
 }

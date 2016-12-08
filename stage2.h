@@ -15,12 +15,12 @@
 
 using namespace std;
 
-const int MAX_SYMBOL_TABLE_SIZE = 256;
+/*const int MAX_SYMBOL_TABLE_SIZE = 256;
 enum storeType {INTEGER, BOOLEAN, PROG_NAME, UNKNOWN};
 enum allocation {YES, NO};
-enum modes {VARIABLE, CONSTANT};
+enum modes {VARIABLE, CONSTANT};*/
 
-struct entry	// define symbol table entry format
+/*struct entry	// define symbol table entry format
 {
 	string internalName;
 	string externalName;
@@ -29,11 +29,28 @@ struct entry	// define symbol table entry format
 	string value;
 	allocation alloc;
 	int units;
-};
+};*/
 
 class Stage
 {
 private:
+	static const int MAX_SYMBOL_TABLE_SIZE = 256;
+	enum storeType {INTEGER, BOOLEAN, PROG_NAME, UNKNOWN};
+	enum allocation {YES, NO};
+	enum modes {VARIABLE, CONSTANT};
+
+	struct entry	// define symbol table entry format
+	{
+		string internalName;
+		string externalName;
+		storeType dataType;
+		modes mode;
+		string value;
+		allocation alloc;
+		int units;
+	};
+
+
 	int *internalGenNum;
 	vector<entry> symbolTable;
 	//vector<entry>::iterator symTableIterator;
@@ -189,6 +206,13 @@ public:
 	void PrintSymbolTable();
 	void setErrorMessage(baseException&);
 
-	friend bool operator==(entry, string);
-	friend bool operator==(entry, pair<storeType, string>);
+	friend bool operator==(entry extName, string name)
+	{
+		return extName.externalName == name;
+	}
+
+	friend bool operator==(entry extName, pair<storeType, string> lookFor)
+	{
+		return (extName.dataType == lookFor.first && extName.value == lookFor.second);
+	}
 };

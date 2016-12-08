@@ -52,7 +52,7 @@ void Stage::Insert(string externalName,storeType inType, modes inMode, string in
     }
 }
 
-storeType Stage::WhichType(string name) //tells which data type a name has
+Stage::storeType Stage::WhichType(string name) //tells which data type a name has
 {
 	storeType dType;
 	vector<entry>::iterator it;
