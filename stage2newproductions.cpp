@@ -28,6 +28,18 @@ void Stage::ExecStmt()
 		else if (token == "write")
 			WriteStmt();
 
+		/*else if (token == "if")
+			IfStmt();
+
+		else if (token == "while")
+			WhileStmt();
+
+		else if (token == "repeat")
+			RepeatStmt();
+
+		else if (token == ";")
+			NullStmt();*/
+
 		else
 			throw syntaxError("NonKeyId, \"read\", or \"write\" expected.", getLine()); //error
 
@@ -39,6 +51,8 @@ void Stage::ExecStmt()
 void Stage::AssignStmt()
 {
 	try {
+		string operand1, operand2;
+
 		if (!isNonKeyID(token))
 			throw syntaxError("NonKeyId expected", getLine());
 
@@ -56,7 +70,10 @@ void Stage::AssignStmt()
 		if (token != ";")
 			throw syntaxError("expected ';'.", getLine());
 
-		Code(PopOperator(), PopOperand(), PopOperand());
+		operand1 = PopOperand();
+		operand2 = PopOperand();
+
+		Code(PopOperator(), operand1, operand2);
 
 	} catch (baseException e) {
 		throw;
@@ -137,8 +154,6 @@ void Stage::Part()
 			if (NextToken() == "(")
 			{
 				Express();
-
-				//Code("not", PopOperand());
 			}
 
 			else if (isInteger(token) || isNonKeyID(token))
@@ -198,7 +213,7 @@ void Stage::Part()
 		}
 
 		else
-			throw syntaxError("Invalid token", getLine());
+			throw syntaxError("expected 'not', 'true', 'false', '(', '+', '-', integer, or non-keyword id; found )", getLine());
 
 	} catch (baseException e) {
 		throw;
@@ -209,7 +224,7 @@ void Stage::Factors()
 {
 	if (isMultLevelOp(token))
 		try {
-			string x;
+			string x, operand1, operand2;
 
 			x = MultLevelOp(token);
 
@@ -219,7 +234,10 @@ void Stage::Factors()
 	
 			Part();
 
-			Code(PopOperator(), PopOperand(), PopOperand());
+			operand1 = PopOperand();
+			operand2 = PopOperand();
+
+			Code(PopOperator(), operand1, operand2);
 
 			Factors();
 
@@ -232,7 +250,7 @@ void Stage::Terms()
 {
 	if (isAddLevelOp(token))
 		try {
-				string x;
+				string x, operand1, operand2;
 
 				x = AddLevelOp(token);
 
@@ -242,7 +260,10 @@ void Stage::Terms()
 				
 				Factor();
 
-				Code(PopOperator(), PopOperand(), PopOperand());
+				operand1 = PopOperand();
+				operand2 = PopOperand();
+
+				Code(PopOperator(), operand1, operand2);
 
 				Terms();
 		
@@ -255,7 +276,7 @@ void Stage::Expresses()
 {
 	if (isRelOp(token))
 		try {
-			string x;
+			string x, operand1, operand2;
 
 			x = RelOp(token);
 
@@ -265,7 +286,10 @@ void Stage::Expresses()
 
 			Term();
 
-			Code(PopOperator(), PopOperand(), PopOperand());
+			operand1 = PopOperand();
+			operand2 = PopOperand();
+
+			Code(PopOperator(), operand1, operand2);
 
 			Expresses();
 

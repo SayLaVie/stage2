@@ -161,12 +161,12 @@ private:
 	// stage2frommain.cpp
 	void newLine();
 
-	// stage2finalproductions.cpp
+	/*// stage2finalproductions.cpp
 	void IfStmt();
 	void ElsePt();
 	void WhileStmt();
 	void RepeatStmt();
-	void NullStmt();
+	void NullStmt();*/
 
 public:
 	// Constructor

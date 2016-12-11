@@ -163,6 +163,21 @@ void Stage::ConstStmts() //token should be NON_KEY_ID
 					throw semanticError("reference to undefined non-key identifier", getLine());
 
 				y = find(symbolTable.begin(), symbolTable.end(), token)->value;
+
+				if (y == "true")
+				{
+					if (count % 2 == 1)
+						y = "false";
+					else
+						y = "true";
+				}
+				else
+				{
+					if (count % 2 == 1)
+						y = "true";
+					else
+						y = "false";
+				}
 			}
 
 			else

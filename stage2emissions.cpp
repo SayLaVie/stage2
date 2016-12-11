@@ -2,7 +2,8 @@
 
 void Stage::EmitProgramCode(string programName)
 {
-	string remark = programName + " - Michael McCarver and Eric Sunday";
+	string remark = programName;
+	remark += " - Michael McCarver and Eric Sunday";
 
 	Emit("STRT", "NOP", "", "", "", remark);
 }
@@ -34,7 +35,10 @@ void Stage::EmitReadCode(string operand1)
 		if (find(symbolTable.begin(), symbolTable.end(), name)->mode == CONSTANT)
 			throw semanticError("reading in of read-only location", getLine());
 
-		remark = "read(" + name + ")";
+		remark = "read(";
+		remark += name;
+		remark += ")";
+
 		Emit("", "RDI", getInternalName(name), "", "", remark);
 
 		name = strip.substr(0, strip.find_first_of(","));
@@ -56,7 +60,10 @@ void Stage::EmitWriteCode(string operand1)
 		if (!inTable(name))
 			throw semanticError("reference to undefined variable", getLine());
 
-		remark = "write(" + name + ")";
+		remark = "write(";
+		remark += name;
+		remark += ")";
+
 		Emit("", "PRI", getInternalName(name), "", "", remark);
 
 		name = strip.substr(0, strip.find_first_of(","));
@@ -68,7 +75,11 @@ void Stage::EmitWriteCode(string operand1)
 void Stage::EmitSubtractionCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(), 
-			remark = operand2 + " - " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " - ";
+	remark += operand1;
 
     // If type of either operand is not integer -- process error
     if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
@@ -120,7 +131,11 @@ void Stage::EmitSubtractionCode(string operand1, string operand2)
 void Stage::EmitAdditionCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " + " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " + ";
+	remark += operand1;
 
 	// Throw error if operands aren't both INTEGER
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
@@ -176,7 +191,9 @@ void Stage::EmitAdditionCode(string operand1, string operand2)
 void Stage::EmitNegationCode(string operand1)
 {
 	string inRegister = GetRegister(),
-			remark = "-" + operand1;
+			remark;
+	remark = "-";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == INTEGER))
 		throw syntaxError("operand must be an integer", getLine());
@@ -220,8 +237,10 @@ void Stage::EmitNegationCode(string operand1)
 void Stage::EmitNotCode(string operand1)
 {
 	string inRegister = GetRegister(),
-			remark = "not " + operand1,
-			jump = GetJump();
+			remark, jump = GetJump();
+
+	remark = "not ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == BOOLEAN))
 		throw syntaxError("operand must be boolean", getLine());
@@ -278,7 +297,11 @@ void Stage::EmitNotCode(string operand1)
 void Stage::EmitDivisionCode(string operand1, string operand2)
 {	
 	string inRegister = GetRegister(),
-			remark = operand2 + " div " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " div ";
+	remark += operand1;
 	
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be integers", getLine());
@@ -329,7 +352,11 @@ void Stage::EmitDivisionCode(string operand1, string operand2)
 void Stage::EmitMultiplicationCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " * " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " * ";
+	remark += operand1;
 
 	// Both types must be integers
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
@@ -382,7 +409,11 @@ void Stage::EmitMultiplicationCode(string operand1, string operand2)
 void Stage::EmitModuloCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " mod " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " mod ";
+	remark += operand1;
 
     if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be integers", getLine());
@@ -409,7 +440,7 @@ void Stage::EmitModuloCode(string operand1, string operand2)
 	}
 
 	// Emit code to perform memory-register modulus
-	Emit("", "IDV", getInternalName(operand2), "", "", remark);
+	Emit("", "IDV", getInternalName(operand1), "", "", remark);
 
 	// Deassign all temps involved
 	if (isTemp(operand1))
@@ -419,6 +450,7 @@ void Stage::EmitModuloCode(string operand1, string operand2)
 
 	// AReg = next availabe temp and change type
 	inRegister = GetTemp();
+	ChangeAlloc(inRegister, YES);
 	AssignRegister(inRegister);
 	ChangeStoreType(inRegister, INTEGER);
 
@@ -433,7 +465,11 @@ void Stage::EmitModuloCode(string operand1, string operand2)
 void Stage::EmitAndCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " and " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " and ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == BOOLEAN && WhichType(operand2) == BOOLEAN))
 		throw syntaxError("both operands must be boolean", getLine());
@@ -486,8 +522,11 @@ void Stage::EmitAndCode(string operand1, string operand2)
 void Stage::EmitOrCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " or " + operand1,
-			jump = GetJump();
+			remark, jump = GetJump();
+
+	remark = operand2;
+	remark += " or ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == BOOLEAN && WhichType(operand2) == BOOLEAN))
 		throw syntaxError("both operands must be type boolean", getLine());
@@ -548,8 +587,11 @@ void Stage::EmitOrCode(string operand1, string operand2)
 void Stage::EmitEqualsCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " = " + operand1,
-			jump = GetJump();
+			remark, jump = GetJump();
+
+	remark = operand1;
+	remark += " = ";
+	remark += operand2;
 
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be of same type", getLine());
@@ -615,12 +657,16 @@ void Stage::EmitEqualsCode(string operand1, string operand2)
 void Stage::EmitAssignCode(string operand1, string operand2)
 {
 	string inRegister = GetRegister(),
-			remark = operand2 + " := " + operand1;
+			remark;
+
+	remark = operand2;
+	remark += " := ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be of same type", getLine());
 
-	if (find(symbolTable.begin(), symbolTable.end(), operand2)->mode != VARIABLE)
+	if (find(symbolTable.begin(), symbolTable.end(), operand1)->mode != VARIABLE)
 		throw syntaxError("identifier to the let of ':=' must be a variable", getLine());
 
 	if (inRegister != operand1)
@@ -651,10 +697,13 @@ void Stage::EmitAssignCode(string operand1, string operand2)
 
 void Stage::EmitGreaterThanCode(string operand1, string operand2)
 {
-	string inRegister = GetRegister(),
-			remark = operand2 + " > " + operand1,
-			jump = GetJump();
+	string inRegister = GetRegister(), jump = GetJump(),
+			remark;
 
+	remark = operand2;
+	remark += " > ";
+	remark += operand1;
+	
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be integers", getLine());
 
@@ -714,9 +763,12 @@ void Stage::EmitGreaterThanCode(string operand1, string operand2)
 
 void Stage::EmitLessThanCode(string operand1, string operand2)
 {
-	string inRegister = GetRegister(),
-			remark = operand2 + " < " + operand1,
-			jump = GetJump();
+	string inRegister = GetRegister(), jump = GetJump(),
+			remark;
+
+	remark = operand2;
+	remark += " < ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be boolean", getLine());
@@ -776,9 +828,12 @@ void Stage::EmitLessThanCode(string operand1, string operand2)
 
 void Stage::EmitGreaterEqualCode(string operand1, string operand2)
 {
-	string inRegister = GetRegister(),
-			remark = operand2 + " >= " + operand1,
-			jump = GetJump();
+	string inRegister = GetRegister(), jump = GetJump(),
+			remark;
+
+	remark = operand2;
+	remark += " >= ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be integers", getLine());
@@ -837,9 +892,12 @@ void Stage::EmitGreaterEqualCode(string operand1, string operand2)
 
 void Stage::EmitLessEqualCode(string operand1, string operand2)
 {
-	string inRegister = GetRegister(),
-			remark = operand2 + " <= " + operand1,
-			jump = GetJump();
+	string inRegister = GetRegister(), jump = GetJump(),
+			remark;
+
+	remark = operand2;
+	remark += " <= ";
+	remark += operand1;
 
 	if (!(WhichType(operand1) == INTEGER && WhichType(operand2) == INTEGER))
 		throw syntaxError("both operands must be integers", getLine());
@@ -898,9 +956,12 @@ void Stage::EmitLessEqualCode(string operand1, string operand2)
 
 void Stage::EmitNotEqualCode(string operand1, string operand2)
 {
-	string inRegister = GetRegister(),
-			remark = operand2 + " <> " + operand1,
-			jump = GetJump();
+	string inRegister = GetRegister(), jump = GetJump(),
+			remark;
+
+	remark = operand1;
+	remark += " <> ";
+	remark += operand2;
 
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be same data type", getLine());
@@ -910,6 +971,7 @@ void Stage::EmitNotEqualCode(string operand1, string operand2)
 		if (isTemp(inRegister))
 		{
 			Emit("", "STA", inRegister, "", "", "deassign AReg");
+			ChangeAlloc(inRegister, YES);
 			AssignRegister("DEASSIGN");
 			inRegister = "DEASSIGN";
 		}
