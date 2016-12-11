@@ -15,22 +15,6 @@
 
 using namespace std;
 
-/*const int MAX_SYMBOL_TABLE_SIZE = 256;
-enum storeType {INTEGER, BOOLEAN, PROG_NAME, UNKNOWN};
-enum allocation {YES, NO};
-enum modes {VARIABLE, CONSTANT};*/
-
-/*struct entry	// define symbol table entry format
-{
-	string internalName;
-	string externalName;
-	storeType dataType;
-	modes mode;
-	string value;
-	allocation alloc;
-	int units;
-};*/
-
 class Stage
 {
 private:
@@ -161,12 +145,12 @@ private:
 	// stage2frommain.cpp
 	void newLine();
 
-	/*// stage2finalproductions.cpp
+	// stage2finalproductions.cpp
 	void IfStmt();
 	void ElsePt();
 	void WhileStmt();
 	void RepeatStmt();
-	void NullStmt();*/
+	void NullStmt();
 
 public:
 	// Constructor

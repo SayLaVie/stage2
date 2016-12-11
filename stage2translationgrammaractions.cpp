@@ -65,6 +65,21 @@ void Stage::Code(string oper, string operand1, string operand2)
 			
 		else if (oper == ":=")
 			EmitAssignCode(operand1, operand2);
+
+		/*else if (oper == "while")
+			EmitWhileCode(operand1, operand2, oper2);*/
+
+		else if (oper == "NOP")
+			EmitNOPCode(operand1, operand2);
+
+		else if (oper == "AZJ")
+			EmitAZJCode(operand1, operand2);
+
+		else if (oper == "UNJ")
+			EmitUNJCode(operand1, operand2);
+
+		else if (oper == "if")
+			EmitIfCode();
 			
 		else //process error: undefined operation
 			throw syntaxError("undefined operation", getLine());

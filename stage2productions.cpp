@@ -107,13 +107,13 @@ void Stage::BeginEndStmt() // token should be "begin"
 
 		if (token != "end")
 			throw syntaxError("keyword \"end\" expected", getLine()); //process error: keyword "end" expected
-		if (NextToken() != ".")
-			throw syntaxError("period expected", getLine()); //process error: period expected
 
-		Code("hlt");
+		if (NextToken() == ".")
+			Code("hlt");
+		else if (token != ";")
+			throw syntaxError("period or semicolon expected", getLine()); //process error: period expected
 
 		NextToken();
-
 
 	} catch (baseException e) {
 		throw;

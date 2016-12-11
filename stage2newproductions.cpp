@@ -28,7 +28,7 @@ void Stage::ExecStmt()
 		else if (token == "write")
 			WriteStmt();
 
-		/*else if (token == "if")
+		else if (token == "if")
 			IfStmt();
 
 		else if (token == "while")
@@ -38,7 +38,7 @@ void Stage::ExecStmt()
 			RepeatStmt();
 
 		else if (token == ";")
-			NullStmt();*/
+			NullStmt();
 
 		else
 			throw syntaxError("NonKeyId, \"read\", or \"write\" expected.", getLine()); //error

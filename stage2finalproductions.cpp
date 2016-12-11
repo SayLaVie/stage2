@@ -2,70 +2,132 @@
 
 void Stage::IfStmt()
 {
-	//'if' EXPRESS 'then' EXEC_STMT ELSE_PT
+	try {
+		//'if' EXPRESS 'then' EXEC_STMT ELSE_PT
 
-	if (token != "if")
-		throw semanticError("keyword 'if' expected", getLine());
+		string operand1, operand2, jump1, jump2;
 
-	Express();
+		if (token != "if")
+			throw semanticError("keyword 'if' expected", getLine());
 
-	if (token != "then")
-		throw semanticError("keyword 'then' expected", getLine());
+		NextToken();
 
-	ExecStmt();
+		Express();
 
-	// NextToken()??
+		operand1 = PopOperand();
+		operand2 = PopOperand();
 
-	ElsePt();
+		Code(PopOperator(), operand1, operand2);
+
+		jump1 = GetJump();
+
+		Code("AZJ", jump1, "if false jump to " + jump1);
+
+		if (token != "then")
+			throw semanticError("keyword 'then' expected", getLine());
+
+		ExecStmt();
+
+		// NextToken()??
+
+		ElsePt();
+
+	} catch (baseException e) {
+		throw;
+	}
 }
 
 void Stage::ElsePt
 {
-	//'else' EXEC_STMT
-	// epsilon
+	try {
+		//'else' EXEC_STMT
+		// epsilon
 
-	if (token == "else")
-	{
-		ExecStmt();
+		if (token == "else")
+		{
+			ExecStmt();
+		}
+
+	} catch (baseException e) {
+		throw;
 	}
 }
 
 void Stage::WhileStmt()
 {
-	//'while' EXPRESS 'do' EXEC_STMT
+	try {
+		//'while' EXPRESS 'do' EXEC_STMTS
 
-	if (token != "while")
-		throw semanticError("expected keyword 'while'", getLine());
+		string jump1 = GetJump(), jump2, operand1, operand2;
 
-	Express();
+		if (token != "while")
+			throw syntaxError("keyword 'while' expected", getLine());
 
-	if (token != "do")
-		throw semanticError("expected keyword 'do'", getLine());
+		NextToken();
 
-	ExecStmt();
+		Express();
+
+		Code("NOP", jump1, "while");
+
+		operand1 = PopOperand();
+		operand2 = PopOperand();
+
+		Code(PopOperator(), operand1, operand2);
+
+		if (NextToken() != "do")
+			throw syntaxError("keyword 'do' expected", getLine());
+
+		jump2 = GetJump();
+
+		Code("AZJ", jump2, "do");
+
+		if (token == "begin")
+			BeginEndStmt();
+		else
+			ExecStmt();
+
+		Code("UNJ", jump1, "end while");
+
+		Code("NOP", jump2);
+
+		NextToken();
+
+	} catch (baseException e) {
+		throw;
+	}
 }
 
 void Stage::RepeatStmt()
 {
-	//'repeat' EXEC_STMTS 'until' EXPRESS
+	try {
+		//'repeat' EXEC_STMTS 'until' EXPRESS
 
-	if (token != "repeat")
-		throw semanticError("keyword 'repeat' expected", getLine());
+		if (token != "repeat")
+			throw semanticError("keyword 'repeat' expected", getLine());
 
-	ExecStmts();
+		ExecStmts();
 
-	if (token != "until")
-		throw semanticError("keyword 'until' expected", getLine());
+		if (token != "until")
+			throw semanticError("keyword 'until' expected", getLine());
 
-	Express();
+		Express();
+
+	} catch (baseException e) {
+		throw;
+	}
 }
 
 void Stage::NullStmt()
 {
-	//';'
+	try {
+		//';'
 
-	if (token != ";")
-		throw semanticError("';' expected", getLine());
+		if (token != ";")
+			throw semanticError("';' expected", getLine());
 
-	NextToken();
+		NextToken();
+
+	} catch (baseException e) {
+		throw;
+	}
 }
