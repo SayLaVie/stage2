@@ -26,11 +26,14 @@ void Stage::IfStmt()
 		if (token != "then")
 			throw semanticError("keyword 'then' expected", getLine());
 
-		ExecStmt();
-
-		// NextToken()??
+		if (NextToken() == "begin")
+			BeginEndStmt();
+		else
+			ExecStmt();
 
 		ElsePt();
+
+		
 
 	} catch (baseException e) {
 		throw;
