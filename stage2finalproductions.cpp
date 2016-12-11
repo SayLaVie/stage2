@@ -5,7 +5,7 @@ void Stage::IfStmt()
 	try {
 		//'if' EXPRESS 'then' EXEC_STMT ELSE_PT
 
-		string operand1, operand2, jump1, jump2;
+		string operand1, operand2, jump1;
 
 		if (token != "if")
 			throw semanticError("keyword 'if' expected", getLine());
@@ -31,7 +31,11 @@ void Stage::IfStmt()
 		else
 			ExecStmt();
 
-		ElsePt();
+		//jump2 = GetJump();
+
+		ElsePt(jump1);
+
+		//Code("NOP", jump1, "end if");
 
 		
 
@@ -40,15 +44,32 @@ void Stage::IfStmt()
 	}
 }
 
-void Stage::ElsePt
+void Stage::ElsePt(string jump1)
 {
 	try {
 		//'else' EXEC_STMT
 		// epsilon
 
+		string jump2;
+
 		if (token == "else")
 		{
-			ExecStmt();
+			jump2 = GetJump();
+
+			Code("UNJ", jump2, "jump to end if");
+			Code("NOP", jump1, "else");
+
+			if (NextToken() == "begin")
+				BeginEndStmt();
+			else
+				ExecStmt();
+
+			Code("NOP", jump2, "end if");
+		}
+
+		else
+		{
+			Code("NOP", jump1, "end if");
 		}
 
 	} catch (baseException e) {
@@ -105,15 +126,26 @@ void Stage::RepeatStmt()
 	try {
 		//'repeat' EXEC_STMTS 'until' EXPRESS
 
+		string jump;
+
 		if (token != "repeat")
 			throw semanticError("keyword 'repeat' expected", getLine());
 
-		ExecStmts();
+		jump = GetJump();
+
+		Code("NOP", jump, "repeat");
+
+		if (NextToken() == "begin")
+			BeginEndStmt();
+		else
+			ExecStmts();
 
 		if (token != "until")
 			throw semanticError("keyword 'until' expected", getLine());
 
 		Express();
+
+		Code("AZJ", jump, "until");
 
 	} catch (baseException e) {
 		throw;
