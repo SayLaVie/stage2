@@ -589,9 +589,9 @@ void Stage::EmitEqualsCode(string operand1, string operand2)
 	string inRegister = GetRegister(),
 			remark, jump = GetJump();
 
-	remark = operand1;
+	remark = operand2;
 	remark += " = ";
-	remark += operand2;
+	remark += operand1;
 
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be of same type", getLine());
@@ -666,7 +666,7 @@ void Stage::EmitAssignCode(string operand1, string operand2)
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be of same type", getLine());
 
-	if (find(symbolTable.begin(), symbolTable.end(), operand1)->mode != VARIABLE)
+	if (find(symbolTable.begin(), symbolTable.end(), operand2)->mode != VARIABLE)
 		throw syntaxError("identifier to the let of ':=' must be a variable", getLine());
 
 	if (inRegister != operand1)
@@ -959,9 +959,9 @@ void Stage::EmitNotEqualCode(string operand1, string operand2)
 	string inRegister = GetRegister(), jump = GetJump(),
 			remark;
 
-	remark = operand1;
+	remark = operand2;
 	remark += " <> ";
-	remark += operand2;
+	remark += operand1;
 
 	if (!(WhichType(operand1) == WhichType(operand2)))
 		throw syntaxError("operands must be same data type", getLine());

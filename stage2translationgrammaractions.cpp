@@ -78,8 +78,8 @@ void Stage::Code(string oper, string operand1, string operand2)
 		else if (oper == "UNJ")
 			EmitUNJCode(operand1, operand2);
 
-		else if (oper == "if")
-			EmitIfCode();
+		else if (oper == "LOAD")
+			EmitLoadCode(operand1);
 			
 		else //process error: undefined operation
 			throw syntaxError("undefined operation", getLine());

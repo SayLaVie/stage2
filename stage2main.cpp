@@ -10,6 +10,7 @@ string Stage::errorMsg = "tst";
 int Stage::errorLine = 0;
 int Stage::errorNumber = 0;
 bool Stage::errorState = false;
+bool Stage::tricky = false;
 
 // Accepts input from argv[1], genarating a listing to argv[2], and object code to argv[3]    
 int main(int argc, char **argv)

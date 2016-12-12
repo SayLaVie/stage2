@@ -19,10 +19,8 @@ void Stage::Prog() // token should be "program"
 		if (token != "begin")
 			throw syntaxError("keyword \"begin\" expected", getLine()); //process error: keyword "begin" expected
 
+		endStk.push('a');
 		BeginEndStmt();
-
-		if (charac != END_OF_FILE)
-			throw syntaxError("no text may follow \"end\"", getLine()); //process error: no text may follow "end"
 
 	} catch (baseException e) {
 		throw;
@@ -108,12 +106,23 @@ void Stage::BeginEndStmt() // token should be "begin"
 		if (token != "end")
 			throw syntaxError("keyword \"end\" expected", getLine()); //process error: keyword "end" expected
 
+		endStk.pop();
+
 		if (NextToken() == ".")
+		{
+			if (!endStk.empty())
+				throw syntaxError("period may only follow the final \"end\" statement", getLine());
+
 			Code("hlt");
+
+			NextToken();
+
+			if (charac != END_OF_FILE)
+				throw syntaxError("no text may follow \"end\"", getLine()); //process error: no text may follow "end"
+		}
+
 		else if (token != ";")
 			throw syntaxError("period or semicolon expected", getLine()); //process error: period expected
-
-		NextToken();
 
 	} catch (baseException e) {
 		throw;

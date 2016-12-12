@@ -9,7 +9,10 @@ void Stage::ExecStmts()
 		{
 			ExecStmt();
 
-			NextToken();
+			if (!tricky)
+				NextToken();
+			else
+				tricky = false;
 		}
 	} catch (baseException e) {
 		throw;
@@ -18,7 +21,7 @@ void Stage::ExecStmts()
 
 void Stage::ExecStmt()
 {
-	try {		
+	try {
 		if (isNonKeyID(token)) 
 			AssignStmt();
 
@@ -40,8 +43,14 @@ void Stage::ExecStmt()
 		else if (token == ";")
 			NullStmt();
 
+		else if (token == "begin")
+		{
+			endStk.push('a');
+			BeginEndStmt();
+		}
+
 		else
-			throw syntaxError("NonKeyId, \"read\", or \"write\" expected.", getLine()); //error
+			throw syntaxError("non-keyword identifier, \"read\", \"write\", \"if\", \"while\", \"repeat\", \";\", or \"begin\" expected", getLine()); //error
 
 	} catch (baseException e) {
 		throw;
@@ -294,6 +303,7 @@ void Stage::Expresses()
 			Expresses();
 
 		} catch (baseException e) {
+		Terms();
 			throw;
 		}
 

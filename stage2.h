@@ -34,7 +34,6 @@ private:
 		int units;
 	};
 
-
 	int *internalGenNum;
 	vector<entry> symbolTable;
 	//vector<entry>::iterator symTableIterator;
@@ -44,10 +43,11 @@ private:
 	char charac, lastChar;
 	int lineNumber, currentTempNo, currentJumpNo, maxTempNo;
 	stack<string> operandStk, operatorStk;
+	stack<char> endStk;
 	string inRegA;
 	static string errorMsg;
 	static int errorLine, errorNumber;
-	static bool errorState;
+	static bool errorState, tricky;
 	static const char END_OF_FILE = '$';
 
 
@@ -121,7 +121,6 @@ private:
 	void ChangeStoreType(string, storeType);
 	string getInternalName(string);
 	bool inTable(string);
-	//vector<entry>::iterator tableLocate(string);
 
 	//stage2translationgrammaractions.cpp
 	void Code(string, string = "", string = "");
@@ -147,10 +146,16 @@ private:
 
 	// stage2finalproductions.cpp
 	void IfStmt();
-	void ElsePt();
+	void ElsePt(string);
 	void WhileStmt();
 	void RepeatStmt();
 	void NullStmt();
+
+	// stage2finalemissions.cpp
+	void EmitNOPCode(string, string);
+	void EmitAZJCode(string, string);
+	void EmitUNJCode(string, string);
+	void EmitLoadCode(string);
 
 public:
 	// Constructor
